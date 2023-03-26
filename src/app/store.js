@@ -1,8 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import { setupListeners } from '@reduxjs/toolkit/dist/query';
+import {cryptoApi} from '../services/cryptoApi'
+import {cryptoNewsApi} from '../services/cryptoNewsApi'
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    [cryptoApi.reducerPath]: cryptoApi.reducer,
+    [cryptoNewsApi.reducerPath]: cryptoNewsApi.reducer,
+
   },
-});
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(cryptoApi.middleware, cryptoNewsApi.middleware),
+}
+);
+
+setupListeners(store.dispatch)
